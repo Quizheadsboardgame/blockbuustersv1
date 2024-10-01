@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOCKBUSTER MOVIES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Standard font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: transparent; /* Fully transparent background */
+            color: black; /* Standard text color */
+            text-align: center;
+        }
+
+        #quiz-container {
+            background-color: transparent; /* Fully transparent container */
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .answer {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: white; /* Change the answer color to white */
+        }
+
+        #next-button {
+            background-color: white; /* Change background color to white */
+            color: black; /* Change text color to black for visibility */
+            border: 2px solid #ff9900; /* Optional: Add a border for better visibility */
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #next-button:hover {
+            background-color: #ffcc00; /* Change hover color for better effect */
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <img id="logo" src="https://i.imgur.com/cyZ0Z21.png" alt="George Michael Logo">
+    <h1>BLOCKBUSTER MOVIES</h1>
+    <div id="question-container">
+        <div class="question" id="question">Loading question...</div>
+        <div class="answer" id="answer">Loading answer...</div>
+        <button id="next-button" onclick="nextQuestion()">Next Question</button>
+    </div>
+</div>
+
+<script>
+    // Question and answers data
+    const quizData = [
+        { question: 'Who was the voice of Smurfette in the 2013 movie "The Smurfs 2"?', answer: 'Katy Perry' },
+        { question: 'Who directed Matt Damon in the 2015 epic "The Martian"?', answer: 'Ridley Scott' },
+        { question: 'Who reprised his role as Tony Stark in the film "Iron Man 3"?', answer: 'Robert Downey, Jr.' },
+        { question: 'Johnny Depp starred in which of these 2013 movies?', answer: 'The Lone Ranger' },
+        { question: 'Christian Bale starred in which 2015 biopic?', answer: 'The Big Short' },
+        { question: 'Seth MacFarlane returned which foul-mouthed character in 2015 for a sequel?', answer: 'Ted' },
+        { question: 'Which 2015 film release starred Amy Poehler?', answer: 'Sisters' },
+        { question: 'Rob Letterman directed Jack Black in which 2015 kids film?', answer: 'Goosebumps' },
+        { question: 'Mark Ruffalo and Michael Keaton starred in which 2015 film based on a true story?', answer: 'Spotlight' },
+        { question: 'Dakota Johnson and Jamie Dornan played in which raunchy 2015 film release?', answer: 'Fifty Shades of Grey' },
+        { question: 'Who played the male lead in the 2013 film "Gravity"?', answer: 'George Clooney' },
+        { question: 'Who played the role of Katniss Everdeen in the film "Hunger Games: Catching Fire"?', answer: 'Jennifer Lawrence' },
+        { question: 'The 2013 movie "Only God Forgives" is set where?', answer: 'Bangkok' },
+        { question: 'Who directed the 2013 movie "The Hobbit: The Desolation of Smaug"?', answer: 'Peter Jackson' },
+        { question: 'What was the title of the 2015 "Mission: Impossible" release?', answer: 'Rogue Nation' },
+        { question: 'The 2013 movie "The Great Gatsby" is based on a novel by who?', answer: 'F. Scott Fitzgerald' },
+        { question: 'Who directed "Star Wars: The Force Awakens"?', answer: 'J.J. Abrams' },
+        { question: 'What is the title of the fourth installment in the Jackass film series released in 2013?', answer: 'Jackass Presents: Bad Grandpa' },
+        { question: 'The 2013 movie "Don Jon" is what sort of movie?', answer: 'Romantic Comedy' },
+        { question: 'Ron Howard\'s 2015 movie "In The Heart Of The Sea" is the story that inspired which great novel?', answer: 'Moby Dick' },
+        { question: 'F. Gary Gray directed a biopic of which musical group in a 2015 film release?', answer: 'NWA' },
+        { question: 'Quentin Tarantino released which post-Civil War epic in 2015?', answer: 'The Hateful Eight' },
+        { question: 'Complete the title of Steven Spielberg\'s 2015 release: "Bridge of __________".', answer: 'Spies' },
+        { question: 'Which of these 2013 movies stars Christian Bale, Bradley Cooper, and Amy Adams?', answer: 'American Hustle' },
+        { question: 'Who directed "Earth\'s Mightiest Heroes" in 2015\'s "Avengers: Age of Ultron"?', answer: 'Joss Whedon' },
+        { question: 'In which year was the David Lean film "Doctor Zhivago" released?', answer: '1965' },
+        { question: 'Who played Blofeld in the 2015 James Bond film "Spectre"?', answer: 'Christoph Waltz' },
+        { question: 'Ellen Page played which character in the movie of the same name?', answer: 'Juno' },
+        { question: 'Anna Kendrick, Rebel Wilson, and the gang returned for a sequel to which a cappella series in 2015?', answer: 'Pitch Perfect' },
+        { question: 'Carey Mulligan starred in which classic tale for a 2015 film?', answer: 'Far from the Madding Crowd' },
+        { question: 'Danny Boyle directed Michael Fassbender in which 2015 biopic?', answer: 'Steve Jobs' },
+        { question: 'Who played Julian\'s mother in the 2013 movie "Only God Forgives"?', answer: 'Kristin Scott Thomas' },
+        { question: 'Emma Watson and Ethan Hawke starred in which 2015 thriller?', answer: 'Regression' },
+        { question: 'Which character was played by Alice Englert in the film Beautiful Creatures?', answer: 'Lena' },
+        { question: 'Who played the role of Felonius Gru in the film "Despicable Me 2"?', answer: 'Steve Carell' },
+        { question: 'Who played the title role in the film "Thor: The Dark World"?', answer: 'Chris Hemsworth' },
+        { question: 'Diane Keaton and John Goodman starred in 2015\'s "Christmas with the…." who?', answer: 'Coopers' },
+        { question: 'Jesse Eisenberg played a stoner who is, in fact, a government agent in which 2015 film release?', answer: 'American Ultra' },
+        { question: 'Will Ferrell starred in which 2015 comedy romp?', answer: 'Get Hard' },
+        { question: 'Channing Tatum returned as which character in a sequel entitled "XXL" in 2015?', answer: 'Magic Mike' },
+        { question: 'Which of these actors provided a voice for the film The Croods?', answer: 'Ryan Reynolds' },
+        { question: 'Which Hollywood star played the boxer Billy Hope in 2015\'s "Southpaw"?', answer: 'Jake Gyllenhaal' },
+        { question: 'In what year did The Twilight Zone first begin to be broadcast?', answer: '1959' },
+        { question: 'In what year was the film Getaway, starring Selena Gomez, released?', answer: '2013' },
+        { question: 'In what year did the first episode of I Love Lucy air in the United States?', answer: '1951' },
+        { question: 'Which of these is the correct name for a 2013 film?', answer: 'World War Z' },
+        { question: 'Arnie came back for a 2015 installment of "The Terminator" franchise but what was it called?', answer: 'Genisys' },
+        { question: 'Which of these is the sixth installment in the X-Men film series, released in 2013?', answer: 'The Wolverine' },
+        { question: 'Which of these horror films was released in January 2013?', answer: 'Texas Chainsaw 3D' },
+        { question: 'What was the number of the "Fast and Furious" film released in 2013?', answer: '6' },
+        { question: 'Which 1991 classic starring Keanu Reeves was remade in 2015?', answer: 'Point Break' },
+        { question: 'Sandra Bullock, Jon Hamm, and Michael Keaton provided voices for which 2015 animated blockbuster?', answer: 'Minions' },
+        { question: 'Which instalment of the "Fast & Furious" series was released in 2015?', answer: '7' },
+        { question: 'Who directed the 2013 movie Oz the Great and Powerful?', answer: 'Sam Raimi' },
+        { question: 'Which of these films was released in 3D in April 2013?', answer: 'Jurassic Park' },
+        { question: 'The 2013 movie "After Earth" stars the son of which famous actor?', answer: 'Will Smith' },
+        { question: 'In what year was the movie "Anchorman 2" released in the cinemas?', answer: '2013' },
+        { question: 'John Boultings adaptation of Brighton Rock was released in which year?', answer: '1947' },
+        { question: 'Disney announced that they were buying Pixar Studios in which year?', answer: '2006' },
+        { question: 'What anniversary did Snow White and the Seven Dwarfs celebrate in 2007?', answer: '70th' },
+        { question: 'In which year was Alfred Hitchcock\'s thriller "The Birds" released?', answer: '1963' },
+        { question: 'Kenneth Branagh directed which classic story in a live-action version in 2015?', answer: 'Cinderella' },
+        { question: 'The sequel to "The Avengers" movie is due to be released in which year?', answer: '2015' },
+        { question: 'In which year was the first Harry Potter movie released in the USA?', answer: '2001' },
+        { question: 'What year was the classic Steve McQueen cop thriller, Bullitt released?', answer: '1968' },
+        { question: 'When did Barbra Streisand win Best Actress Oscar for Funny Girl?', answer: '1968' },
+        { question: 'In which year was The Princess Diaries 2: Royal Engagement released?', answer: '2004' },
+        { question: 'In which year was the David Lean film "Doctor Zhivago" released?', answer: '1965' },
+        { question: 'Eternal Sunshine of the Spotless Mind was released in which year?', answer: '2004' },
+        { question: 'Bette Davis\'s last film, The Wicked Stepmother, was released in which year?', answer: '1989' },
+        { question: 'In which year did actress Julia Roberts celebrate her 40th birthday?', answer: '2007' },
+        { question: 'The first movie of the Bourne series was released in which year?', answer: '2002' },
+        { question: 'When did the movie Saturday Night Fever get everyone into disco?', answer: '1977' },
+        { question: 'In what year were the Academy Awards first televised in black and white?', answer: '1953' },
+        { question: 'In which year did Tatum O\'Neal win Best Supporting Actress for Paper Moon?', answer: '1973' },
+        { question: 'What is Briggs code number in The Top Secret Life of Edgar Briggs?', answer: 'OO14' },
+        { question: 'Cameron Diaz, Gwyneth Paltrow, and Toni Colette were all born in which year?', answer: '1972' },
+        { question: 'In which century do the Pirates of the Caribbean movies take place?', answer: '18th' },
+        { question: 'Who is the Earth at war with in the 2013 movie "Pacific Rim"?', answer: 'Kaijus' },
+        { question: 'What is the name of Gru\'s irritating matchmaking neighbor in the 2013 movie Despicable Me 2?', answer: 'Jillian' },
+        { question: 'Katniss from the 2013 movie "The Hunger Games: Catching Fire" is from which district?', answer: '12' },
+        { question: 'Who is the voice of Anna in the 2013 movie "Frozen"?', answer: 'Kristen Bell' },
+        { question: 'Who played the title role in the 2013 film "The Great Gatsby"?', answer: 'Leonardo DiCaprio' },
+        { question: 'Which lead actor played Owen in the 2015 release of "Jurassic World"?', answer: 'Chris Pratt' },
+        { question: 'Who played the female lead in the 2013 film "Gravity"?', answer: 'Sandra Bullock' },
+        { question: 'Who played Gretel in the 2013 movie "Hansel & Gretel: Witch Hunters"?', answer: 'Gemma Arterton' },
+        { question: 'Bradley Cooper and Jennifer Lawrence reunited for which 2015 David O\'Russell film?', answer: 'Joy' },
+        { question: 'Which actor played the superhero Ant-Man in the 2015 film?', answer: 'Paul Rudd' },
+        { question: 'Who played in Bilbo Baggins the 2013 movie "The Hobbit: The Desolation of Smaug"?', answer: 'Martin Freeman' },
+        { question: 'Who plays the role of Oz in the film "Oz the Great and Powerful"?', answer: 'James Franco' },
+        { question: 'Tom Hardy took over from Mel Gibson in 2015 for the 3rd installment of which franchise?', answer: 'Mad Max' }
+    ];
+
+    let shuffledQuestions = [];
+    let currentQuestion = 0;
+
+    // Function to shuffle questions
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        }
+    }
+
+    // Initialize quiz
+    function initQuiz() {
+        shuffledQuestions = [...quizData]; // Create a copy of the original data
+        shuffleArray(shuffledQuestions); // Shuffle the questions
+        currentQuestion = Math.floor(Math.random() * shuffledQuestions.length); // Start from a random question
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const questionContainer = document.getElementById("question");
+        const answerContainer = document.getElementById("answer");
+
+        questionContainer.innerText = shuffledQuestions[currentQuestion].question;
+        answerContainer.innerText = shuffledQuestions[currentQuestion].answer;
+
+        questionContainer.classList.remove('fadeOut');
+        answerContainer.classList.remove('fadeOut');
+
+        questionContainer.classList.add('fadeIn');
+        answerContainer.classList.add('fadeIn');
+    }
+
+    function nextQuestion() {
+        const questionContainer = document.getElementById("question");
+        const answerContainer = document.getElementById("answer");
+
+        questionContainer.classList.remove('fadeIn');
+        answerContainer.classList.remove('fadeIn');
+
+        questionContainer.classList.add('fadeOut');
+        answerContainer.classList.add('fadeOut');
+
+        setTimeout(() => {
+            if (shuffledQuestions.length > 1) {
+                // Remove the current question from the array
+                shuffledQuestions.splice(currentQuestion, 1); // Remove used question
+                currentQuestion = Math.floor(Math.random() * shuffledQuestions.length); // Pick new random question
+                showQuestion();
+            } else {
+                questionContainer.innerText = "Thank you for playing!";
+                answerContainer.innerText = "";
+                document.getElementById("next-button").style.display = "none"; // Hide the next button
+            }
+        }, 500);
+    }
+
+    // Start the quiz on page load
+    initQuiz();
+</script>
+
+</body>
+</html>
